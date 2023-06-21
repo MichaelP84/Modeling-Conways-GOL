@@ -2,65 +2,83 @@ import time
 import pygame
 import numpy as np
 from collections import deque
+import math
 
-pygame.init()
-screen = pygame.display.set_mode((800, 600))
+
+WIDTH = 10
+LENGTH = 10
 
 COLOR_BG = (10, 10, 10)
 COLOR_GRID = (40, 40, 40)
 COLOR_DIE_NEXT = (170, 170, 170)
 COLOR_ALIVE_NEXT = (255, 255, 255)
 
+RED = (199, 5, 0)
+GREEN = (34, 139, 34)
+
+GAME_SIZE = 1_000
+
+pygame.init()
+screen = pygame.display.set_mode((WIDTH * 20, LENGTH * 20))
+
+
 class CGOL:
 
-    def __init__(self, w=80, h=60, size=10) -> None:
+    def __init__(self, w=LENGTH, h=WIDTH, size=20) -> None:
         self.w = w
         self.h = h
         self.size = size
-        self.game_iteration = 0
-        self.unique_states = []
+        self.game_iteration = 0 # number of simulations ran
+        # self.unique_states = []
+        self.running = True
+        self.num_states = 0 # number of states reached in one game
 
-        self.cells = np.random.randint(0, 2, (60, 80))
-        self.log = deque(maxlen=3)
+
+        self.cells = np.random.randint(0, 2, (WIDTH, LENGTH))
+        self.log = deque(maxlen=20)
+        self.reached = np.array([], dtype=int)
 
         screen.fill(COLOR_GRID)
         self.cells = self.update_ui(screen, size, with_progress=True)
 
         pygame.display.update()
 
+    
+    def get_state(self):
+        return self.seed
+    
+    def get_avg_reached(self):
+        print(f'count: {(self.reached).size}')
+        print(f'average states reached: {np.average(self.reached)}')
 
 
-    def play_step(self):
+    def play_step(self, seed):
+        self.cells = seed
 
-        states = 0
-        self.game_iteration += 1
-        running = True
+        if (self.running == False):
+            screen.fill(COLOR_GRID)
+            self.num_states = 0
+            self.running = True
+            self.log.clear()
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
 
-        screen.fill(COLOR_GRID)
+        self.cells = self.update_ui(screen, self.size, with_progress=True)
+        self.num_states += 1
 
-        while running:
-            self.cells = self.update_ui(screen, self.size, with_progress=True)
-            states += 1
-            
-            if not any(self.cells == unique_cells for unique_cells in self.unique_states):
-                self.cells_to_string()
+        # turn grid into numeric hash
+        coded = self.cells_to_string()
+        # prevent infinite loops
+        if any(coded == save for save in self.log):
+           self.running = False
+        self.log.append(coded)
 
-            if any(np.array_equal(self.cells, save, equal_nan=False) for save in self.log):
-                running = False
-
-                        
-            self.log.append(self.cells)
-
-            pygame.display.update()
-
-            time.sleep(0.001)
-        
-        return states, self.game_iteration, len(self.unique_states)
+        pygame.display.update()
+        time.sleep(0.0005)
+        return self.cells, self.num_states, self.running
     
     def reset(self, new_cells):
         self.cells = new_cells
@@ -72,9 +90,9 @@ class CGOL:
         for row in self.cells:
             for col in row:
                 s += str(col)
-        self.unique_states.append(s)
 
-
+        return str(int(s, 2))
+        
     def update_ui(self, screen, size, with_progress):
         updated_cells = np.zeros((self.cells.shape[0], self.cells.shape[1]), dtype=np.int8)
 
@@ -101,55 +119,39 @@ class CGOL:
 
         return updated_cells
     
+    def show_diff(self, predicted, loop, state):
+        size = self.size
+        updated_cells = np.zeros((self.cells.shape[0], self.cells.shape[1]), dtype=np.int8)
+
+        for row, col in np.ndindex(self.cells.shape):
+            
+
+            if self.cells[row, col] == 0 and predicted[row, col] > 0:
+                r = min(int(200 * abs(self.cells[row, col] - predicted[row, col])) + 50, 250)
+                color = (r, 0, 0)
+            elif self.cells[row, col] == 1 and predicted[row, col] < 0:
+                color = COLOR_ALIVE_NEXT
+            elif self.cells[row, col] == 1 and self.cells[row, col] > 0:
+                g = min(int(100 * abs(self.cells[row, col] - predicted[row, col])), 250)
+                color = (g, 255, g)
+            else:
+                color = COLOR_BG
+            pygame.draw.rect(screen, color, (col * size, row * size, size - 1, size - 1))
+            text = round(predicted[row, col].item(), 2)
+            text = str(text)
+            self.draw_text(text, (col * size, row * size, size - 1, size - 1))
+        
+        pygame.display.update()
+        rect = pygame.Rect(0, 0, WIDTH * 20, LENGTH * 20)
+        sub = screen.subsurface(rect)
+        pygame.image.save(sub, f'screen\screenshot{loop}_{state}.jpg')
+ 
+
+    def draw_text(self, num, coords):
+        font = pygame.font.SysFont('arial', 9)
+        img = font.render(num, False, (255, 166, 241))
+        screen.blit(img, coords)
+    
     def run_simulation(self):
         pass
-
-
-def main():
-        
-    running = False
-    game_iteration = 0
-    states = 0
-    short_memory = deque([])
-
-    
-    while True:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                return
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE:
-                    running = not running
-                    (screen, cells, 10)
-                    pygame.display.update()
-
-            # if pygame.mouse.get_pressed()[0]:
-            #     pos = pygame.mouse.get_pos()
-            #     cells[pos[1] // 10, pos[0] // 10] = 1
-            #     update(screen, cells, 10)
-            #     pygame.display.update()
-        
-        screen.fill(COLOR_GRID)
-
-        if running:
-            cells = update(screen, cells, 10, with_progress=True)
-            if any(np.array_equal(cells, save, equal_nan=False) for save in short_memory):
-                print(f'states: {states}')
-                states = 0
-                game_iteration += 1
-
-
-                # get model.predict
-                cells = np.random.randint(0, 2, (60, 80))
-
-            states += 1
-            if (len(short_memory) > 3):
-                short_memory.popleft()
-
-            short_memory.append(cells)
-
-            pygame.display.update()
-
-        time.sleep(0.001)
 
