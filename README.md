@@ -25,15 +25,23 @@ The limitations of predicting complex systems makes Conway's Game of Life a capt
 
 What I will be comparing my results to is a baseline model, where the prediction for the next state is the last state of the simulation.
 
+![](https://github.com/MichaelP84/Modeling-Conways-GOL/blob/main/git_resources/GAME.gif)
+
 ### Baseline
 
 
 
-### CNN
+### Convolutional Nueral Network
+
+![](https://github.com/MichaelP84/Modeling-Conways-GOL/blob/main/git_resources/CNN.gif)
+
+### Linear Network
+
+![](https://github.com/MichaelP84/Modeling-Conways-GOL/blob/main/git_resources/FF.gif)
 
 
 
-### Fully Connected
+
 
 
 
