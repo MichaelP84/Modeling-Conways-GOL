@@ -39,6 +39,8 @@ Over 100 trials, the accuracy of the CNN was 99.88%
 
 ![](https://github.com/MichaelP84/Modeling-Conways-GOL/blob/main/git_resources/CNN.gif)
 
+The raw output values of the models are seen in the GIF via the numbers, and these nubmers are reflected as right and wrong as green and red, where the magnitude of correctness is proportional to the virbance of said color.
+
 ### Linear Network
 
 Over 100 trials, the accuracy of the Linear Network was 99.81%
@@ -48,7 +50,7 @@ Over 100 trials, the accuracy of the Linear Network was 99.81%
 
 ### Conclusion
 
-Both models did suprisingly well, and outperformed the baseline by about 12% to 13%. It is interesting to observe how while the CNN and Linear networks learned the underlying rules of Conway's game of life, the CNN, utilizes some compression of information/ dimension reduction during the initial convolutional layer. This makes me hypothesize that on a larger grid size (20x20 or more), a CNN's filters would be able to better learn the rules of Conway's Game of Life. Meaning, a CNN would outperform a purely Linear model of the same size at this level. However, that will have to be the focus of a different experiment.
+Both models did suprisingly well, and outperformed the baseline by about 12% to 13%. It is interesting to observe how while the CNN and Linear networks learned the underlying rules of Conway's game of life, the CNN, utilizes some compression of information/ dimension reduction during the initial convolutional layer. As a result, in the GIF for the CNN, a lot of residual values close to 0 are seen around the correct values. This contrasts the Linear model where values tend to stay at 0 when not a strong guess. This makes me hypothesize that on a larger grid size (20x20 or more), a CNN's filters would be able to better learn the rules of Conway's Game of Life. Meaning, a CNN would outperform a purely Linear model of the same size at this level. However, that will have to be the focus of a different experiment.
 
 
 
