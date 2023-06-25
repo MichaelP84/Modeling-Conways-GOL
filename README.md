@@ -23,19 +23,23 @@ Conway's Game of Life is a computationally irreducible system, meaning there is 
 
 The limitations of predicting complex systems makes Conway's Game of Life a captivating study. My objective was to abstract the rules of this simulation into a different computationally irreducible system. Or, in other words, get a nueral network to learn the update rules of the simulation.
 
-What I will be comparing my results to is a baseline model, where the prediction for the next state is the last state of the simulation.
-
 ![](https://github.com/MichaelP84/Modeling-Conways-GOL/blob/main/git_resources/GAME.gif)
 
 ### Baseline
 
+What I will be comparing my results to is a baseline model, where the prediction for the next state is the last state of the simulation.
 
+Over 100 trials, the accuracy of the baseline was 87%
 
 ### Convolutional Nueral Network
+
+Over 100 trials, the accuracy of the CNN was 99.88%
 
 ![](https://github.com/MichaelP84/Modeling-Conways-GOL/blob/main/git_resources/CNN.gif)
 
 ### Linear Network
+
+Over 100 trials, the accuracy of the Linear Network was 99.81%
 
 ![](https://github.com/MichaelP84/Modeling-Conways-GOL/blob/main/git_resources/FF.gif)
 
