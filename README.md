@@ -1,7 +1,7 @@
 # Modeling-Conways-Game-of-Life
 Modeling cellular automata/re-representing a computationally irreducible system.
 
-![](https://github.com/MichaelP84/Modeling-Conways-GOL/tree/main/git_resources)
+![](https://github.com/MichaelP84/Modeling-Conways-GOL/blob/main/git_resources/ConwayGif.gif)
 
 
 ## The Game
