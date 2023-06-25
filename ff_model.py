@@ -4,32 +4,22 @@ import torch.optim as optim
 import torch.nn.functional as F
 import os
 
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-
-class CNN_Net(nn.Module):
-    def __init__(self, output_size):
+class Linear_Net(nn.Module):
+    def __init__(self, input_size, small_hidden_size, hidden_size, output_size):
         super().__init__()
-        self.CNN_1 = nn.Sequential(
-            nn.Conv2d(1, 4, kernel_size = 3, stride = 1, padding = 1),
-            nn.ReLU(),
-            nn.Conv2d(4,8, kernel_size = 3, stride = 1, padding = 1),
-            nn.ReLU()
-        )
-
-        self.Linear = nn.Sequential(
-            nn.Linear(800,800),
-            nn.ReLU(),
-            nn.Linear(800,1024),
-            nn.ReLU(),
-            nn.Linear(1024, 1024),
-            nn.ReLU(),
-            nn.Linear(1024, output_size)
-        )
+        self.hidden1 = nn.Linear(input_size, small_hidden_size)
+        self.hidden2 = nn.Linear(small_hidden_size, hidden_size)
+        self.hidden3 = nn.Linear(hidden_size, hidden_size)
+        self.hidden4 = nn.Linear(hidden_size, small_hidden_size)
+        self.output = nn.Linear(small_hidden_size, output_size)
 
     def forward(self, x):
-        x = self.CNN_1(x)
-        x = x.flatten()
-        return self.Linear(x)
+        x = F.relu(self.hidden1(x))
+        x = self.hidden2(x)
+        x = F.relu(self.hidden3(x))
+        x = self.hidden4(x)
+        x = F.relu(self.output(x))
+        return x
 
     def save(self, folder, file_name='model.pth'):
         model_folder_path = f'./{folder}'
@@ -40,7 +30,7 @@ class CNN_Net(nn.Module):
         torch.save(self.state_dict(), file_name)
 
 
-class CNN_Trainer:
+class Trainer:
     def __init__(self, model, lr):
         self.lr = lr
         self.model = model
@@ -48,30 +38,27 @@ class CNN_Trainer:
         self.criterion = nn.MSELoss()
 
     def train_step(self, prediction, target):
-        # zero gradients
+        # zero gradiesnt
         self.optimizer.zero_grad()
-        prediction = torch.flatten(prediction)
-        # print(f'training {prediction.shape, target.shape}')
         # calculate loss
         loss = self.criterion(prediction, target)
-        # calculate gradients and step
+        # calculate gradients
         loss.backward()
+
         self.optimizer.step()
     
     def train_step_batch(self, sample):
         total_loss = 0
         for (initial, target) in sample:
-            # zero gradients
+            # zero gradiesnt
             self.optimizer.zero_grad()
-            # calculate prediction
-            prediction = self.model(initial)
             # calculate loss
-            # print(f'training {prediction.shape, target.shape}')
+            prediction = self.model(initial)
             loss = self.criterion(prediction, target)
             total_loss += loss
-            # calculate gradients and step
+            # calculate gradients
             loss.backward()
-            self.optimizer.step()
 
+            self.optimizer.step()
         print(f'batch loss = {total_loss}, batch size = {len(sample)}')
 

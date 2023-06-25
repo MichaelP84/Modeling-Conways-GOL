@@ -4,7 +4,6 @@ import numpy as np
 from collections import deque
 import math
 
-
 WIDTH = 10
 LENGTH = 10
 
@@ -12,16 +11,13 @@ COLOR_BG = (10, 10, 10)
 COLOR_GRID = (40, 40, 40)
 COLOR_DIE_NEXT = (170, 170, 170)
 COLOR_ALIVE_NEXT = (255, 255, 255)
-
 RED = (199, 5, 0)
 GREEN = (34, 139, 34)
-
-GAME_SIZE = 1_000
 
 pygame.init()
 screen = pygame.display.set_mode((WIDTH * 20, LENGTH * 20))
 
-
+# responsible for running Conway's Game of Life
 class CGOL:
 
     def __init__(self, w=LENGTH, h=WIDTH, size=20) -> None:
@@ -29,10 +25,8 @@ class CGOL:
         self.h = h
         self.size = size
         self.game_iteration = 0 # number of simulations ran
-        # self.unique_states = []
         self.running = True
         self.num_states = 0 # number of states reached in one game
-
 
         self.cells = np.random.randint(0, 2, (WIDTH, LENGTH))
         self.log = deque(maxlen=20)
@@ -50,7 +44,6 @@ class CGOL:
     def get_avg_reached(self):
         print(f'count: {(self.reached).size}')
         print(f'average states reached: {np.average(self.reached)}')
-
 
     def play_step(self, seed):
         self.cells = seed
@@ -85,7 +78,6 @@ class CGOL:
         pass
 
     def cells_to_string(self):
-        # is this too inefficient ??
         s = ''
         for row in self.cells:
             for col in row:
@@ -124,8 +116,6 @@ class CGOL:
         updated_cells = np.zeros((self.cells.shape[0], self.cells.shape[1]), dtype=np.int8)
 
         for row, col in np.ndindex(self.cells.shape):
-            
-
             if self.cells[row, col] == 0 and predicted[row, col] > 0:
                 r = min(int(200 * abs(self.cells[row, col] - predicted[row, col])) + 50, 250)
                 color = (r, 0, 0)
