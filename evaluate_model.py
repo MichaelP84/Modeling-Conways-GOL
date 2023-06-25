@@ -67,11 +67,35 @@ def test_model_cnn(epochs, model):
             initial_state = target
             initial_Tensor = target_Tensor
 
-            # # download game images
-            # if ((loop + 1) % (epochs / 10) == 0):
-            #     game.show_diff(torch.reshape(prediction, (WIDTH, LENGTH)), loop, game.num_states)
-    
     print(sum(accuracy) / len(accuracy))
+
+def download_frames_cnn(initial_state, model):
+    model = load_model_CNN(f'C:\\Users\\Michael\\Desktop\\CGOL\\cnn_model\\{model}.pth')
+    game = CGOL()
+    running = True
+
+    # create inital game state
+    initial_state = initial_state
+    initial_Tensor = torch.tensor(initial_state, dtype=torch.float, device=device)
+
+    while running:
+        # [x , y] -> [0, 0, x, y]
+        initial_Tensor = torch.unsqueeze(initial_Tensor, dim=0)
+        initial_Tensor = torch.unsqueeze(initial_Tensor, dim=0)
+
+        # get move
+        prediction = model(initial_Tensor)
+
+        # get actual state
+        target, num_states, game_running = game.play_step(initial_state)
+        target_Tensor = torch.tensor(target, dtype=torch.float, device=device)
+        running = game_running
+
+        initial_state = target
+        initial_Tensor = target_Tensor
+
+        game.download_diff(torch.reshape(prediction, (WIDTH, LENGTH)), 'CNN', game.num_states)
+
 
 def test_model_ff(epochs, model):
     model = load_model_FF(f'C:\\Users\\Michael\\Desktop\\CGOL\\ff_model\\{model}.pth')
@@ -101,12 +125,32 @@ def test_model_ff(epochs, model):
 
             initial_state = target
             initial_Tensor = target_Tensor
-
-            # # download game images
-            # if ((loop + 1) % (epochs / 10) == 0):
-            #     game.show_diff(torch.reshape(prediction, (WIDTH, LENGTH)), loop, game.num_states)
     
     print(sum(accuracy) / len(accuracy))
+
+
+def download_frames_ff(initial_state, model):
+    model = load_model_FF(f'C:\\Users\\Michael\\Desktop\\CGOL\\ff_model\\{model}.pth')
+    game = CGOL()
+    running = True
+
+    # create inital game state
+    initial_state = initial_state
+    initial_Tensor = torch.tensor(initial_state.flatten(), dtype=torch.float, device=device)
+
+    while running:
+        # get move
+        prediction = model(initial_Tensor)
+
+        # get actual state
+        target, num_states, game_running = game.play_step(initial_state)
+        target_Tensor = torch.tensor(target.flatten(), dtype=torch.float, device=device)
+        running = game_running
+
+        initial_state = target
+        initial_Tensor = target_Tensor
+        game.download_diff(torch.reshape(prediction, (WIDTH, LENGTH)), 'FF', game.num_states)
+
 
 def base_line_model(epochs):
     accuracy = []
@@ -137,10 +181,31 @@ def base_line_model(epochs):
     
     print(sum(accuracy) / len(accuracy))
 
+def download_frames_game(first_state):
+    game = CGOL()
+    running = True
+
+    # create inital game state
+    initial_state = first_state
+    while running:
+        # get actual state
+        target, num_states, game_running = game.play_step(initial_state)
+        target_Tensor = torch.tensor(target.flatten(), dtype=torch.float, device=device)
+        running = game_running
+
+        initial_state = target
+        
+        game.download_screen(num_states)
+
 def main():
     # base_line_model(100) # 87% accuracy
     # test_model_cnn(100, 'model_cnn_3') # 99.88% accuracy
     # test_model_ff(100, 'model_ff_2') # 99.81% accuracy
+
+    # initial_state = np.random.randint(0, 2, (WIDTH, LENGTH))
+    # download_frames_game(initial_state)
+    # download_frames_cnn(initial_state, 'model_cnn_3')
+    # download_frames_ff(initial_state, 'model_ff_2')
     pass
 
 

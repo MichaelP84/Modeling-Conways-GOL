@@ -84,7 +84,8 @@ class CGOL:
                 s += str(col)
 
         return str(int(s, 2))
-        
+    
+    # main GOL logic
     def update_ui(self, screen, size, with_progress):
         updated_cells = np.zeros((self.cells.shape[0], self.cells.shape[1]), dtype=np.int8)
 
@@ -111,7 +112,8 @@ class CGOL:
 
         return updated_cells
     
-    def show_diff(self, predicted, loop, state):
+    # saves a screenshot of the game with the differences between predictions and actual values being highlighted by color difference and numbers
+    def download_diff(self, predicted, loop, state):
         size = self.size
         updated_cells = np.zeros((self.cells.shape[0], self.cells.shape[1]), dtype=np.int8)
 
@@ -135,7 +137,11 @@ class CGOL:
         rect = pygame.Rect(0, 0, WIDTH * 20, LENGTH * 20)
         sub = screen.subsurface(rect)
         pygame.image.save(sub, f'screen\screenshot{loop}_{state}.jpg')
- 
+    
+    def download_screen(self, state):
+        rect = pygame.Rect(0, 0, WIDTH * 20, LENGTH * 20)
+        sub = screen.subsurface(rect)
+        pygame.image.save(sub, f'screen\screenshotGAME_{state}.jpg')
 
     def draw_text(self, num, coords):
         font = pygame.font.SysFont('arial', 9)

@@ -80,7 +80,7 @@ def train_ff(epochs):
 
             # download game images
             if ((loop + 1) % (epochs / 10) == 0):
-                game.show_diff(torch.reshape(prediction, (WIDTH, LENGTH)), loop, game.num_states)
+                game.download_diff(torch.reshape(prediction, (WIDTH, LENGTH)), loop, game.num_states)
             
         if (loop > 0):
             agent.train_long_memory(loop)
@@ -127,7 +127,7 @@ def train_cnn(epochs):
 
             # download game images
             if ((loop + 1) % (epochs / 10) == 0):
-                game.show_diff(torch.reshape(prediction, (WIDTH, LENGTH)), loop, game.num_states)
+                game.download_diff(torch.reshape(prediction, (WIDTH, LENGTH)), loop, game.num_states)
             
         if (loop > 0):
             agent.train_long_memory(loop)
