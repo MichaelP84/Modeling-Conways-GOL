@@ -21,9 +21,11 @@ Conway's Game of Life is a computationally irreducible system, meaning there is 
 
 ## The Model
 
-The limitations of predicting complex systems makes Conway's Game of Life a captivating study. My objective was to abstract the rules of this simulation into a different computationally irreducible system. Or, in other words, get a nueral network to learn the update rules of the simulation.
+The limitations of predicting complex systems makes Conway's Game of Life a captivating study. My objective was to abstract the rules of this simulation into a different computationally irreducible system. Or, in other words, get a nueral network to learn the update rules of the simulation. During this project, the model's were trained on game data of a 10x10 grid as it played out, where after every game, the model was trained on a random sample of 1000 previous states.
 
 ![](https://github.com/MichaelP84/Modeling-Conways-GOL/blob/main/git_resources/GAME.gif)
+
+The model predictions on this initial game state will be used for visually comparing results.
 
 ### Baseline
 
@@ -44,8 +46,9 @@ Over 100 trials, the accuracy of the Linear Network was 99.81%
 ![](https://github.com/MichaelP84/Modeling-Conways-GOL/blob/main/git_resources/FF.gif)
 
 
+### Conclusion
 
-
+Both models did suprisingly well, and outperformed the baseline by about 12% to 13%. It is interesting to observe how while the CNN and Linear networks learned the underlying rules of Conway's game of life, the CNN, utilizes some compression of information/ dimension reduction during the initial convolutional layer. This makes me hypothesize that on a larger grid size (20x20 or more), a CNN's filters would be able to better learn the rules of Conway's Game of Life. Meaning, a CNN would outperform a purely Linear model of the same size at this level. However, that will have to be the focus of a different experiment.
 
 
 
