@@ -39,7 +39,7 @@ Over 100 trials, the accuracy of the CNN was 99.88%
 
 ![](https://github.com/MichaelP84/Modeling-Conways-GOL/blob/main/git_resources/CNN.gif)
 
-The raw output values of the models are seen in the GIF via the numbers, and these nubmers are reflected as right and wrong as green and red, where the magnitude of correctness is proportional to the virbance of said color.
+The raw output values of the models are seen in the GIF via the numbers, and these numbers are reflected as right and wrong as green and red, where the magnitude of correctness is proportional to the virbance of said color.
 
 ### Linear Network
 
